@@ -1,9 +1,9 @@
 const axios = require('axios');
 const lastFMApiKey = process.env.LAST_FM_API_KEY;
 
-function shuffleAndReturnOne(arr) {
+function shuffleAndReturnThree(arr) {
     let shuffledArr = arr.sort(() => Math.random() - 0.5);
-    return shuffledArr[0];
+    return shuffledArr.slice(0, 2);
 }
 
 exports.lastFindSimilarTracks = async (req, res) => {
@@ -20,8 +20,6 @@ exports.lastFindSimilarTracks = async (req, res) => {
         let trackName = encodeURIComponent(track.name);
 
         try {  
-            console.log("Going through: " + track.name + " by " + track.artist);
-            console.log(`http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist=${artistName}&track=${trackName}&api_key=${lastFMApiKey}&format=json&limit=50`);
             const similarTrack = await axios.get(`http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist=${artistName}&track=${trackName}&api_key=${lastFMApiKey}&format=json&limit=50`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
@@ -29,7 +27,6 @@ exports.lastFindSimilarTracks = async (req, res) => {
             });
 
             const allSimilarTracks = similarTrack.data.similartracks.track;
-            console.log(allSimilarTracks)
             const onlyNamesAndArtists = allSimilarTracks.map(track => {
                 return { name: track.name, artist: track.artist.name };
             });
@@ -41,8 +38,8 @@ exports.lastFindSimilarTracks = async (req, res) => {
             );
 
             if (uniqueFilteredTracks.length > 0) {
-                const shuffledTrack = shuffleAndReturnOne(uniqueFilteredTracks);
-                matchingTracks.push(shuffledTrack);
+                const shuffledTracks = shuffleAndReturnThree(uniqueFilteredTracks);
+                matchingTracks.push(...shuffledTracks);
             } else if (onlyNamesAndArtists.length === 1) {
                 matchingTracks.push(onlyNamesAndArtists[0]);
             }
