@@ -15,10 +15,15 @@ exports.findTrackIdSpotify = async (req, res) => {
                 }
             });
 
-            return response.data.tracks.items[0]?.id;
+            return {
+                id: response.data.tracks.items[0]?.id,
+                preview_url: track.preview 
+            };
         });
 
-        const trackIds = (await Promise.all(trackIdPromises)).filter(id => id !== undefined);
+        const trackIdResults = await Promise.all(trackIdPromises);
+        const trackIds = trackIdResults.filter(result => result.id !== undefined).map(result => result.id);
+        const previewUrls = trackIdResults.filter(result => result.id !== undefined).map(result => result.preview_url);
         const batchSize = 50;
         const trackDetailsPromises = [];
 
@@ -36,14 +41,15 @@ exports.findTrackIdSpotify = async (req, res) => {
         const trackDetailsResponses = await Promise.all(trackDetailsPromises);
         const trackDetails = trackDetailsResponses.flatMap(response => response.data.tracks);
 
-        const trackInfo = trackDetails.map(track => ({
+        const trackInfo = trackDetails.map((track, index) => ({
             name: track.name,
             popularity: track.popularity,
             duration_ms: track.duration_ms,
             artist: track.artists[0].name,
             id: track.id,
             images: track.album.images,
-            album: track.album.name
+            album: track.album.name,
+            preview_url: previewUrls[index] 
         }));
 
         res.json(trackInfo);

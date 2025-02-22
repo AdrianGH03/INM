@@ -1,53 +1,110 @@
 const axios = require('axios');
-const lastFMApiKey = process.env.LAST_FM_API_KEY;
 
-function shuffleAndReturnThree(arr) {
+function shuffleAndReturnOne(arr) {
     let shuffledArr = arr.sort(() => Math.random() - 0.5);
-    return shuffledArr.slice(0, 2);
+    return shuffledArr[0];
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 exports.lastFindSimilarTracks = async (req, res) => {
-    const accessToken = req.cookies.access_token;
     const tracks = req.body.tracks;
     let matchingTracks = [];
+    const maxTracks = tracks.length; // Set maxTracks to the length of the tracks body parameter
+    const maxRequestsPerBatch = 50; // Deezer's rate limit
+    const delayBetweenBatches = 5000; // 5 seconds
 
-    if (!accessToken || !tracks) {
+    if (!tracks) {
         return res.status(401).json({ error: 'Missing parameter for request' });
     }
+    let requestCount = 0;
 
-    for (let track of tracks) {
+    for (let i = 0; i < tracks.length; i++) {
+        if (matchingTracks.length >= maxTracks) {
+            break;
+        }
+
+        let track = tracks[i];
         let artistName = encodeURIComponent(track.artist);
         let trackName = encodeURIComponent(track.name);
 
-        try {  
-            const similarTrack = await axios.get(`http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist=${artistName}&track=${trackName}&api_key=${lastFMApiKey}&format=json&limit=50`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
+        try {
+            const searchResponse = await axios.get(`https://api.deezer.com/search?q=artist:"${artistName}"track:"${trackName}"`);
 
-            const allSimilarTracks = similarTrack.data.similartracks.track;
-            const onlyNamesAndArtists = allSimilarTracks.map(track => {
-                return { name: track.name, artist: track.artist.name };
-            });
+            requestCount++;
+            if (requestCount >= maxRequestsPerBatch) {
+                await delay(delayBetweenBatches);
+                requestCount = 0;
+            }
 
-            const uniqueFilteredTracks = onlyNamesAndArtists.filter(filteredTrack => 
-                !matchingTracks.some(matchingTrack => 
-                    matchingTrack.name === filteredTrack.name && matchingTrack.artist === filteredTrack.artist
-                )
+            if (searchResponse.data.data.length === 0) {
+                continue;
+            }
+
+            const trackData = searchResponse.data.data[0];
+            const artistId = trackData.artist.id;
+
+            const relatedArtistsResponse = await axios.get(`https://api.deezer.com/artist/${artistId}/related`);
+
+            requestCount++;
+            if (requestCount >= maxRequestsPerBatch) {
+                await delay(delayBetweenBatches);
+                requestCount = 0;
+            }
+
+            let relatedArtists = relatedArtistsResponse.data.data;
+            if (relatedArtists.length === 0) {
+                continue;
+            }
+
+            // Sort related artists by popularity or any other criteria
+            relatedArtists = relatedArtists.sort((a, b) => b.nb_fan - a.nb_fan);
+
+            // Pick between the top 3 artists, shuffle two if three don't exist, and just pick the one if only one exists
+            let selectedArtist;
+            if (relatedArtists.length >= 3) {
+                selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 3));
+            } else if (relatedArtists.length === 2) {
+                selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 2));
+            } else {
+                selectedArtist = relatedArtists[0];
+            }
+
+            // Get tracks from the selected related artist using radio endpoint
+            const radioResponse = await axios.get(`https://api.deezer.com/artist/${selectedArtist.id}/radio`);
+
+            requestCount++;
+            if (requestCount >= maxRequestsPerBatch) {
+                await delay(delayBetweenBatches);
+                requestCount = 0;
+            }
+
+            const radioTracks = radioResponse.data.data;
+
+            // Filter out tracks that already exist in the original tracks array
+            const uniqueRadioTracks = radioTracks.filter(radioTrack => 
+                !tracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name)
             );
 
-            if (uniqueFilteredTracks.length > 0) {
-                const shuffledTracks = shuffleAndReturnThree(uniqueFilteredTracks);
-                matchingTracks.push(...shuffledTracks);
-            } else if (onlyNamesAndArtists.length === 1) {
-                matchingTracks.push(onlyNamesAndArtists[0]);
+            if (uniqueRadioTracks.length === 0) {
+                continue;
             }
+
+            const selectedTrack = shuffleAndReturnOne(uniqueRadioTracks);
+
+            matchingTracks.push({
+                name: selectedTrack.title,
+                artist: selectedTrack.artist.name,
+                preview: selectedTrack.preview,
+                relatedArtistSource: artistName
+            });
+
         } catch (error) {
-            console.error('Error fetching similar tracks:', error.message);
+            console.error('Error fetching similar tracks:', error.message, error.response ? error.response.data : '');
             return res.status(500).json({ error: 'Failed to fetch similar tracks' });
         }
     }
-
     res.json(matchingTracks);
 }
