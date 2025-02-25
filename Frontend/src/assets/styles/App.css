@@ -1,0 +1,30 @@
+.track-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  place-items: center;
+  gap: 1rem;
+}
+
+.track{
+  display: flex;
+  align-items: center;
+  width: 300px;
+  gap: 1rem;
+}
+
+.track div {
+  font-size: 8px;
+}
+
+button{
+  background-color: #121212;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.audio{
+  width: 150px;
+    height: 30px;
+}

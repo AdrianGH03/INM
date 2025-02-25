@@ -1,4 +1,5 @@
-/Frontend
 plan.txt
 .env
 node_modules
+Home.jsx
+App.jsx
