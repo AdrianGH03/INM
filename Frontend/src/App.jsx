@@ -1,0 +1,66 @@
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useContext } from 'react';
+
+import { UserContext } from './contexts/UserContext';
+import { AppRoutes } from './routes/AppRoutes';
+
+import './assets/styles/App.css';
+
+function App() {
+    const [profile, setProfile] = useState(null);
+
+    return (
+        <UserContext.Provider value={{ profile, setProfile }}>
+            <Router>
+                <HomeWrapper />
+            </Router>
+        </UserContext.Provider>
+    );
+}
+
+export function StarterCode() {
+    return (
+        <div>
+            <h1>Starter Code</h1>
+            <p>Click on the button below to start the application</p>
+            <a href="http://localhost:5000/callback">Start</a>
+        </div>
+    );
+}
+
+function HomeWrapper() {
+    const { profile, setProfile } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/profile', {
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    navigate('/');
+                }
+                const data = await response.json();
+                setProfile(data);
+                navigate 
+            } catch (error) {
+                if(error.status === 401){
+                    navigate('/')
+                }
+                console.error('Error fetching profile:', error);
+            }
+        };
+
+        fetchProfile();
+    }, []);
+
+
+    return (
+        <div>
+            <AppRoutes />
+        </div>
+    );
+}
+
+export default App;
