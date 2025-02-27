@@ -64,9 +64,7 @@ exports.lastFindSimilarTracks = async (req, res) => {
 
             // Pick between the top 3 artists, shuffle two if three don't exist, and just pick the one if only one exists
             let selectedArtist;
-            if (relatedArtists.length >= 3) {
-                selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 3));
-            } else if (relatedArtists.length === 2) {
+            if (relatedArtists.length >= 2) {
                 selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 2));
             } else {
                 selectedArtist = relatedArtists[0];
@@ -85,7 +83,8 @@ exports.lastFindSimilarTracks = async (req, res) => {
 
             // Filter out tracks that already exist in the original tracks array
             const uniqueRadioTracks = radioTracks.filter(radioTrack => 
-                !tracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name)
+                !tracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name) &&
+                !matchingTracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name)
             );
 
             if (uniqueRadioTracks.length === 0) {
@@ -102,6 +101,10 @@ exports.lastFindSimilarTracks = async (req, res) => {
             });
 
         } catch (error) {
+            if (error.response && error.response.status === 403) {
+                continue;
+            }
+            console.log(error)
             console.error('Error fetching similar tracks:', error.message, error.response ? error.response.data : '');
             return res.status(500).json({ error: 'Failed to fetch similar tracks' });
         }
