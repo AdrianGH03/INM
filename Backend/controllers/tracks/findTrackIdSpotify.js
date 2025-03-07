@@ -41,16 +41,18 @@ exports.findTrackIdSpotify = async (req, res) => {
         const trackDetailsResponses = await Promise.all(trackDetailsPromises);
         const trackDetails = trackDetailsResponses.flatMap(response => response.data.tracks);
 
-        const trackInfo = trackDetails.map((track, index) => ({
-            name: track.name,
-            popularity: track.popularity,
-            duration_ms: track.duration_ms,
-            artist: track.artists[0].name,
-            id: track.id,
-            images: track.album.images,
-            album: track.album.name,
-            preview_url: previewUrls[index] 
-        }));
+        const trackInfo = trackDetails
+            .filter(track => track.popularity >= 10) // Filter out tracks with popularity less than 15
+            .map((track, index) => ({
+                name: track.name,
+                popularity: track.popularity,
+                duration_ms: track.duration_ms,
+                artist: track.artists[0].name,
+                id: track.id,
+                images: track.album.images,
+                album: track.album.name,
+                preview_url: previewUrls[index] 
+            }));
 
         res.json(trackInfo);
     } catch (error) {

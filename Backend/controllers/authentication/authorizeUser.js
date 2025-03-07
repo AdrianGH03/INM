@@ -1,3 +1,4 @@
+const axios = require('axios');
 const { LocalStorage } = require('node-localstorage');
 const localStorage = new LocalStorage('./scratch');
 require('dotenv').config();
@@ -11,9 +12,14 @@ async function authorizeUser(req, res) {
     if (!code) {
         await redirectToLogin(clientId, res);
     } else {
-        const accessToken = await getAccessToken(clientId, clientSecret, code);
-       
-        res.cookie('access_token', accessToken, { httpOnly: true, secure: true });
+        const { access_token, refresh_token } = await getAccessToken(clientId, clientSecret, code);
+
+        if (!access_token || !refresh_token) {
+            return res.status(400).json({ error: 'Failed to obtain access or refresh token' });
+        }
+
+        res.cookie('access_token', access_token, { httpOnly: true, secure: true });
+        res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true });
         res.redirect(`http://localhost:5173/home`);
     }
 }
@@ -54,7 +60,22 @@ async function getAccessToken(clientId, clientSecret, code) {
         body: params
     });
 
-    const { access_token } = await result.json();
+    const { access_token, refresh_token } = await result.json();
+    return { access_token, refresh_token };
+}
+
+async function getNewAccessToken(refreshToken) {
+    const params = new URLSearchParams();
+    params.append("client_id", clientId);
+    params.append("client_secret", clientSecret);
+    params.append("grant_type", "refresh_token");
+    params.append("refresh_token", refreshToken);
+
+    const result = await axios.post("https://accounts.spotify.com/api/token", params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+    });
+
+    const { access_token } = result.data;
     return access_token;
 }
 
@@ -94,4 +115,4 @@ async function getProfile(accessToken) {
     }
 }
 
-module.exports = { authorizeUser, getProfile };
+module.exports = { authorizeUser, getProfile, getNewAccessToken };

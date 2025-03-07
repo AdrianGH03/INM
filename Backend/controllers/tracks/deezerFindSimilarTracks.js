@@ -9,7 +9,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-exports.lastFindSimilarTracks = async (req, res) => {
+exports.deezerFindSimilarTracks = async (req, res) => {
     const tracks = req.body.tracks;
     let matchingTracks = [];
     const maxTracks = tracks.length; // Set maxTracks to the length of the tracks body parameter
@@ -58,37 +58,45 @@ exports.lastFindSimilarTracks = async (req, res) => {
             if (relatedArtists.length === 0) {
                 continue;
             }
-
-            // Sort related artists by popularity or any other criteria
             relatedArtists = relatedArtists.sort((a, b) => b.nb_fan - a.nb_fan);
 
-            // Pick between the top 3 artists, shuffle two if three don't exist, and just pick the one if only one exists
             let selectedArtist;
-            if (relatedArtists.length >= 2) {
+            if (relatedArtists.length >= 5) {
+                selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 5));
+            }
+            else if (relatedArtists.length >= 4) {
+                selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 4));
+            }
+            else if (relatedArtists.length >= 3) {
+                selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 3));
+            }
+            else if (relatedArtists.length >= 2) {
                 selectedArtist = shuffleAndReturnOne(relatedArtists.slice(0, 2));
             } else {
                 selectedArtist = relatedArtists[0];
             }
 
-            // Get tracks from the selected related artist using radio endpoint
-            const radioResponse = await axios.get(`https://api.deezer.com/artist/${selectedArtist.id}/radio`);
+            let uniqueRadioTracks = [];
+            while (uniqueRadioTracks.length === 0) {
+                const radioResponse = await axios.get(`https://api.deezer.com/artist/${selectedArtist.id}/radio`);
 
-            requestCount++;
-            if (requestCount >= maxRequestsPerBatch) {
-                await delay(delayBetweenBatches);
-                requestCount = 0;
-            }
+                requestCount++;
+                if (requestCount >= maxRequestsPerBatch) {
+                    await delay(delayBetweenBatches);
+                    requestCount = 0;
+                }
 
-            const radioTracks = radioResponse.data.data;
+                const radioTracks = radioResponse.data.data;
 
-            // Filter out tracks that already exist in the original tracks array
-            const uniqueRadioTracks = radioTracks.filter(radioTrack => 
-                !tracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name) &&
-                !matchingTracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name)
-            );
+                // Filter out tracks that already exist in the original tracks array
+                uniqueRadioTracks = radioTracks.filter(radioTrack => 
+                    !tracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name) &&
+                    !matchingTracks.some(t => t.name === radioTrack.title && t.artist === radioTrack.artist.name)
+                );
 
-            if (uniqueRadioTracks.length === 0) {
-                continue;
+                if (uniqueRadioTracks.length === 0) {
+                    selectedArtist = shuffleAndReturnOne(relatedArtists);
+                }
             }
 
             const selectedTrack = shuffleAndReturnOne(uniqueRadioTracks);

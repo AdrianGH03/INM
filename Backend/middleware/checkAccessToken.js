@@ -1,54 +1,37 @@
-const { getProfile } = require('../controllers/authentication/authorizeUser');
-const { LocalStorage } = require('node-localstorage');
-const localStorage = new LocalStorage('./scratch');
+const axios = require('axios');
+const { getNewAccessToken } = require('../controllers/authentication/authorizeUser');
 
-async function validateAccessToken(req, res, next) {
-    const accessToken = req.cookies.access_token;
+async function checkAndRefreshToken(req, res, next) {
+    let accessToken = req.cookies.access_token;
+    const refreshToken = req.cookies.refresh_token;
 
-    if (!accessToken) {
-        return res.status(401).json({ error: 'No access token provided' });
+    if (!accessToken || !refreshToken) {
+        return res.status(400).json({ error: 'Missing access or refresh token' });
     }
 
     try {
-        const profile = await getProfile(accessToken);
-        req.user = profile;
+        await axios.get('https://api.spotify.com/v1/me', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
         next();
     } catch (error) {
-        if (error.status === 401) {
-            const refreshToken = localStorage.getItem('refresh_token');
-            if (!refreshToken) {
-                return res.status(401).json({ error: 'No refresh token available' });
-            }
-
+        if (error.response && error.response.status === 401) {
             try {
-                const newAccessToken = await refreshAccessToken(refreshToken);
-                res.cookie('access_token', newAccessToken, { httpOnly: true, secure: true });
-                req.user = await getProfile(newAccessToken);
+                accessToken = await getNewAccessToken(refreshToken);
+                res.cookie('access_token', accessToken, { httpOnly: true, secure: true });
+                req.cookies.access_token = accessToken; 
                 next();
             } catch (refreshError) {
-                return res.status(401).json({ error: 'Failed to refresh access token' });
+                console.error('Error refreshing access token:', refreshError.message);
+                res.status(401).json({ error: 'Failed to refresh access token' });
             }
         } else {
-            return res.status(500).json({ error: 'Failed to validate access token' });
+            console.error('Error with access token:', error.message);
+            res.status(401).json({ error: 'Invalid access token' });
         }
     }
 }
 
-async function refreshAccessToken(refreshToken) {
-    const params = new URLSearchParams();
-    params.append("client_id", process.env.SPOTIFY_CLIENT_ID);
-    params.append("client_secret", process.env.SPOTIFY_CLIENT_SECRET);
-    params.append("grant_type", "refresh_token");
-    params.append("refresh_token", refreshToken);
-
-    const result = await fetch("https://accounts.spotify.com/api/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-    });
-
-    const { access_token } = await result.json();
-    return access_token;
-}
-
-module.exports = validateAccessToken;
+module.exports = checkAndRefreshToken;
