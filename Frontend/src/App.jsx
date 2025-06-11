@@ -5,6 +5,7 @@ import { UserContext } from './contexts/UserContext';
 import { AppRoutes } from './routes/AppRoutes';
 
 import './assets/styles/App.css';
+import Header from './components/Layout/Header';
 
 function App() {
     const [profile, setProfile] = useState(null);
@@ -15,16 +16,6 @@ function App() {
                 <HomeWrapper />
             </Router>
         </UserContext.Provider>
-    );
-}
-
-export function StarterCode() {
-    return (
-        <div>
-            <h1>Starter Code</h1>
-            <p>Click on the button below to start the application</p>
-            <a href="http://localhost:5000/callback">Start</a>
-        </div>
     );
 }
 
@@ -57,7 +48,8 @@ function HomeWrapper() {
 
 
     return (
-        <div>
+        <div className='app-container'>
+            <Header />
             <AppRoutes />
         </div>
     );

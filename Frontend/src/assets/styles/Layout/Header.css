@@ -1,0 +1,36 @@
+
+.header-logo {
+    max-width: 100px;
+    
+}
+.header-spotify-icon{
+    max-width: 80px;
+}
+.header-container{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-spotify-button{
+    display: flex;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: white;
+    background-color: rgb(32, 32, 32);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+}
+
+@media screen and (min-width: 960px) {
+    .header-navbar{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    .header-container{
+        display: flex;
+        align-items: center;
+        width: 90%;
+    }
+}
