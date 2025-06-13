@@ -1,4 +1,6 @@
 @import './Layout/Header.css';
+@import './Main/Carousel.css';
+@import url('https://fonts.googleapis.com/css2?family=Michroma&family=Stalinist+One&display=swap');
 
 .track-container{
   display: grid;
@@ -18,10 +20,9 @@
   font-size: 8px;
 }
 
-
-
 .audio{
   width: 250px;
     height: 30px;
 }
+
 

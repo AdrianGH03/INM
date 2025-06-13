@@ -6,6 +6,7 @@ import { AppRoutes } from './routes/AppRoutes';
 
 import './assets/styles/App.css';
 import Header from './components/Layout/Header';
+import Carousel from './components/Main/Carousel';
 
 function App() {
     const [profile, setProfile] = useState(null);
@@ -34,7 +35,8 @@ function HomeWrapper() {
                 }
                 const data = await response.json();
                 setProfile(data);
-                navigate 
+                console.log('Profile fetched:', data);
+                 
             } catch (error) {
                 if(error.status === 401){
                     navigate('/')
@@ -49,8 +51,13 @@ function HomeWrapper() {
 
     return (
         <div className='app-container'>
-            <Header />
+            <Header profile={profile} />
             <AppRoutes />
+            <div className="carousel-section">
+                <Carousel />
+            </div>
+            {/* add cards here tomorrow */}
+            <h1>Test</h1>
         </div>
     );
 }
