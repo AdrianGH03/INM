@@ -47,7 +47,7 @@ function Home() {
     return (
         <div>
             <Playlists playlists={playlists} setPlaylists={setPlaylists} />
-            <Tracks playlists={playlists} currentPage={currentPage} tracksPerPage={tracksPerPage} setTracks={setTracks} setFilteredTracks={setFilteredTracks} setGenres={setGenres} setTracksShow={setTracksShow} filteredTracks={filteredTracks} />
+            {/* <Tracks playlists={playlists} currentPage={currentPage} tracksPerPage={tracksPerPage} setTracks={setTracks} setFilteredTracks={setFilteredTracks} setGenres={setGenres} setTracksShow={setTracksShow} filteredTracks={filteredTracks} />
             <h2>Your Playlists</h2>
             <button onClick={shuffleTracks}>Shuffle Tracks</button>
             <Genres genres={genres} handleGenreClick={handleGenreClick} />
@@ -55,7 +55,7 @@ function Home() {
                 {tracksShow}
             </div>
             <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} tracksPerPage={tracksPerPage} filteredTracks={filteredTracks} />
-            <SimilarTracks tracksShow={tracksShow} setTrackIds={setTrackIds} trackIds={trackIds} trackIdsShow={trackIdsShow} setTrackIdsShow={setTrackIdsShow} />
+            <SimilarTracks tracksShow={tracksShow} setTrackIds={setTrackIds} trackIds={trackIds} trackIdsShow={trackIdsShow} setTrackIdsShow={setTrackIdsShow} /> */}
         </div>
     );
 }

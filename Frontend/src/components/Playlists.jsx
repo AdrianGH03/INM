@@ -27,7 +27,22 @@ function Playlists({ playlists, setPlaylists }) {
         }
     }, [navigate, playlists, setPlaylists]);
 
-    return null;
+    return (
+        <div className='playlists-container'>
+            <h2>Your Playlists</h2>
+            {playlists.playlists && playlists.playlists.length > 0 ? (
+                playlists.playlists.map((playlist, index) => (
+                    <div key={index} className='playlist-item'>
+                        <img src={playlist.images[0].url} alt={playlist.name} className='playlist-image' />
+                        <h3>{playlist.name}</h3>
+                        <p>{playlist.description}</p>
+                    </div>
+                ))
+            ) : (
+                <p>No playlists found.</p>
+            )}
+        </div>
+    )
 }
 
 export default Playlists;
