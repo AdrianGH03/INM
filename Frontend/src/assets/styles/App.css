@@ -26,3 +26,103 @@
 }
 
 
+
+
+
+
+
+
+
+
+
+.app-container{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.home-cards-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  align-self: center;
+  margin-top: 3rem;
+}
+.home-card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  max-width: 300px;
+  background-color: #121212;
+  padding: 4.5rem;
+  font-family: 'Michroma', sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+
+}
+.home-card h2{
+  font-family: 'Stalinist One', sans-serif;
+  color: #c81edf;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.home-card:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+.home-card p{
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.4;
+  color: #d3d2d2;
+}
+
+.animate__backInUp {
+  animation-name: backInUp;
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0.1s;
+}
+@keyframes backInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
+@media (max-width: 1024px) {
+  .track-container {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .track {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .audio {
+    width: 100%;
+  }
+  .home-cards-container {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+  .home-card {
+    max-width: none;
+    padding: 2rem;
+  }
+  .app-container{
+    padding-bottom: 10rem;
+  }
+}
+

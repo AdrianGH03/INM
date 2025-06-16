@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
-import { UserContext } from './contexts/UserContext';
-import Playlists from './components/Playlists';
-import Tracks from './components/Tracks';
-import Pagination from './components/Pagination';
-import Genres from './components/Genres';
-import SimilarTracks from './components/SimilarTracks';
+import { UserContext } from '../contexts/UserContext';
+import Playlists from '../components/Playlists';
+import Tracks from '../components/Tracks';
+import Pagination from '../components/Pagination';
+import Genres from '../components/Genres';
+import SimilarTracks from '../components/SimilarTracks';
 
 function Home() {
     const { profile } = useContext(UserContext);

@@ -7,7 +7,7 @@
   justify-content: center;
   align-items: center;
   perspective: 1200px;
-  margin-top: 10rem;
+  margin-top: 8rem;
 }
 
 .app-title {
@@ -41,7 +41,6 @@
   background-position: center;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   transition: transform 0.4s cubic-bezier(.4,2,.6,1), box-shadow 0.4s;
-
 }
 
 .card-2 {
@@ -76,7 +75,7 @@
 }
 
 
-@media (max-width: 700px) {
+@media (max-width: 1024px) {
   .carousel {
     width: 90vw;
     height: 220px;
@@ -103,3 +102,5 @@
   .card-4 { transform: translateX(120px) scale(0.9) rotateY(-32deg); }
 
 }
+
+

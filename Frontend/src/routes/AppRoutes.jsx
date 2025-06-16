@@ -1,11 +1,12 @@
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
-import Home from '../Home'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from '../views/Home';
+import MainPage from '../views/MainPage';
 
-export function AppRoutes(){
+export function AppRoutes() {
     return (
         <Routes>
             <Route path="/home" element={<Home />} />
-            
+            <Route path="/" element={<MainPage />} />
         </Routes>
     );
 }

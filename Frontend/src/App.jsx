@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 
 import { UserContext } from './contexts/UserContext';
@@ -6,7 +6,6 @@ import { AppRoutes } from './routes/AppRoutes';
 
 import './assets/styles/App.css';
 import Header from './components/Layout/Header';
-import Carousel from './components/Main/Carousel';
 
 function App() {
     const [profile, setProfile] = useState(null);
@@ -53,11 +52,6 @@ function HomeWrapper() {
         <div className='app-container'>
             <Header profile={profile} />
             <AppRoutes />
-            <div className="carousel-section">
-                <Carousel />
-            </div>
-            {/* add cards here tomorrow */}
-            <h1>Test</h1>
         </div>
     );
 }
