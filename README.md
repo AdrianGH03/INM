@@ -29,7 +29,7 @@
 - **Frontend:** React, JavaScript, CSS  
 - **Backend:** Node.js  
 - **APIs Used:** [Spotify API](https://developer.spotify.com), [Deezer API](https://developers.deezer.com/)  
-- **Deployment:** Vercel / Netlify (Replace with actual)
+- **Deployment:** Vercel 
 
 ---
 
