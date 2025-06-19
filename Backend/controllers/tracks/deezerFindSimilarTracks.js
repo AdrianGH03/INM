@@ -13,8 +13,8 @@ exports.deezerFindSimilarTracks = async (req, res) => {
     const tracks = req.body.tracks;
     let matchingTracks = [];
     const maxTracks = tracks.length; // Set maxTracks to the length of the tracks body parameter
-    const maxRequestsPerBatch = 50; // Deezer's rate limit
-    const delayBetweenBatches = 5000; // 5 seconds
+    const maxRequestsPerBatch = 500; // Deezer's rate limit
+    const delayBetweenBatches = 0; // 5 seconds
 
     if (!tracks) {
         return res.status(401).json({ error: 'Missing parameter for request' });

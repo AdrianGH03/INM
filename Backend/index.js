@@ -12,11 +12,36 @@ const checkAndRefreshToken = require('./middleware/checkAccessToken');
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+const corsOptions = {
+  origin: ['http://localhost:5173', 'https://inm-25.vercel.app'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: [
+    'X-CSRF-Token', 
+    'X-Requested-With', 
+    'Accept', 
+    'Accept-Version', 
+    'Content-Length', 
+    'Content-MD5', 
+    'Content-Type', 
+    'Date', 
+    'X-Api-Version',
+    'x-server-token',
+    'x-server-secret',
+    'Access-Control-Allow-Origin',
+  ],
+};
+
+app.use(cors(corsOptions));
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/', authorizeUserRoute);
 app.use('/playlists', checkAndRefreshToken, playlistRoute);
 app.use('/tracks', checkAndRefreshToken, tracksRoute);
+
+app.get('/', (req, res) => {
+  res.send('Working');
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

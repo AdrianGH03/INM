@@ -1,0 +1,534 @@
+/* General Styles */
+.track-container{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  place-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  padding: 1rem 2rem 2rem 2rem;
+  margin: 0 1rem;
+}
+.home{
+  padding-bottom: 0px;
+}
+.home {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+}
+
+.home button{
+  background-color: #121212;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: 2px solid white;
+  cursor: pointer;
+  font-family: 'Michroma', sans-serif;
+}
+.home .pagination-buttons button{
+  background-color: transparent;
+  border: none;
+  font-size: 1.6rem;
+}
+.home .pagination-buttons button:hover{
+  color: #bdbdbd;
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.track{
+  display: flex;
+  align-items: center;
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  gap: 1rem;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.track:hover {
+  transform: translateY(-2px);
+}
+
+.track img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.track:hover img {
+  transform: scale(1.05);
+}
+
+.track div {
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+  overflow: hidden;
+  z-index: 2;
+  position: relative;
+}
+
+.track h3,
+.track p {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.track h3 {
+  font-size: 12px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.track p {
+  font-size: 10px;
+  color: #d3d2d2;
+  opacity: 0.9;
+}
+
+/* Genre Buttons Styling */
+.genres{
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: auto;
+  padding: 2rem 0 3rem 0;
+  align-self: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.genres::before {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  opacity: 0.6;
+}
+
+.genres::after {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  opacity: 0.6;
+}
+
+.genres button{
+  flex: none;
+  padding: 0.4rem 0.8rem;
+  min-width: fit-content;
+  white-space: nowrap;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.genres button:hover {
+  border-color: #c81edf;
+  color: #c81edf;
+}
+
+.genres button:active {
+    transform: translateY(1px);
+}
+
+.genres button.active {
+  background: transparent;
+  border-color: #c81edf;
+  color: #c81edf;
+}
+
+/* Track Main Controls Styling */
+.track-main-controls {
+  display: none !important;
+}
+
+.track-main-controls button{
+  flex: none;
+  min-width: 150px;
+  padding: 1rem 2rem;
+  background: linear-gradient(145deg, rgba(18, 18, 18, 0.9), rgba(40, 40, 40, 0.9));
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    
+}
+
+.track-main-controls button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.track-main-controls button:hover::before {
+    left: 100%;
+}
+
+.track-main-controls button:hover {
+  background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(60, 60, 60, 0.9));
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.audio{
+  width: 250px;
+  height: 35px;
+  background: linear-gradient(145deg, rgba(200, 30, 223, 0.1), rgba(200, 30, 223, 0.2));
+  border: 1px solid rgba(200, 30, 223, 0.3);
+  outline: none;
+}
+
+.audio::-webkit-media-controls-panel {
+  background: linear-gradient(145deg, rgba(18, 18, 18, 0.9), rgba(40, 40, 40, 0.9));
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.genres button.active {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.pagination-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+
+/* Similar Tracks Styling */
+.similar-tracks-section {
+  margin-top: 3rem;
+  padding: 2rem 0;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.similar-tracks-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.similar-tracks-header h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.similar-tracks-header p {
+  color: #b3b3b3;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.get-similar-tracks-btn {
+  background: linear-gradient(135deg, #c81edf 0%, #e91e63 100%);
+  border: none;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(200, 30, 223, 0.3);
+}
+
+.get-similar-tracks-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 30, 223, 0.4);
+  background: linear-gradient(135deg, #d435e8 0%, #f02d75 100%);
+}
+
+.get-similar-tracks-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.similar-tracks-results-header {
+  text-align: center;
+  margin: 2rem 0 1.5rem 0;
+}
+
+.similar-tracks-results-header h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.similar-tracks-results-header p {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+}
+
+.similar-tracks-container {
+  margin-top: 1rem;
+}
+
+.similar-track {
+  position: relative;
+}
+
+.similar-track img {
+  transition: all 0.3s ease;
+}
+
+.similar-track img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(200, 30, 223, 0.3);
+  cursor: pointer;
+}
+
+.similar-track img:active {
+  transform: scale(0.98);
+}
+.similar-track p {
+  color: #fff;
+  font-size: 1rem;
+  min-width: 2ch;
+  margin-right: 0.5rem;
+  display: block;
+}
+
+/* Responsive adjustments for similar tracks */
+@media (max-width: 768px) {
+  .similar-tracks-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .get-similar-tracks-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .similar-tracks-results-header h3 {
+    font-size: 1.2rem;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .similar-tracks-results-header p {
+    font-size: 0.8rem;
+  }
+  .similar-tracks-header p{
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .track-container {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+    margin: 0;
+  }      
+  .track {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .track img {
+    width: 70px !important;
+    height: 70px !important;
+  }  
+  .track div {
+    display: none; 
+  }
+  .track h3 {
+    font-size: 9px;
+    margin: 0;
+  }
+  .track p {
+    font-size: 8px;
+    margin: 0;
+  }
+  .audio {
+    width: 100%;
+  }
+  .genres {
+    padding: 1.5rem 0 2rem 0;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 0 0.5rem;
+  }
+  .genres::before,
+  .genres::after {
+    display: none;
+  }  
+  .genres button {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.6rem;
+  }
+  .track-main-controls {
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .track-main-controls::before,
+  .track-main-controls::after {
+    display: none;
+  }
+  .track-main-controls button {
+    min-width: 120px;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.8rem;    
+  }
+}
+
+@media (max-width: 768px) {
+  .track-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    padding: 0.5rem;
+    margin: 0;
+    animation: none;
+  }  
+  .track {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding: 0.3rem;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+  }
+  .track::before {
+    display: none;
+  }
+  .track:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(200, 30, 223, 0.4);
+  }
+  .track img {
+    width: 90px !important;
+    height: 90px !important;
+  }
+  .track div {
+    display: none; 
+  }
+  .genres {
+    padding: 0.8rem 0 1rem 0;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin: 0 0.5rem;
+  }
+  .genres::before,
+  .genres::after {
+    display: none;
+  }  
+  .genres button {
+    font-size: 0.45rem;
+    padding: 0.25rem 0.4rem;
+    min-width: 45px;
+  }
+  .track-main-controls {
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 0.5rem;
+  }
+  .track-main-controls::before,
+  .track-main-controls::after {
+    display: none;
+  }
+  .track-main-controls button {
+    font-size: 0.6rem;
+    padding: 0.6rem 1rem;
+    min-width: 90px;
+    letter-spacing: 0.8px;
+  }
+}
+
+/* Laptop and desktop - show row layout with text */
+@media (min-width: 1200px) {
+  .track-container {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    padding: 1rem 2rem;
+  }
+  
+  .track {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .track img {
+    width: 80px !important;
+    height: 80px !important;
+    flex-shrink: 0;
+  }
+  
+  .track div {
+    display: flex !important;
+    flex-direction: column;
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+  }
+  
+  .track h3 {
+    font-size: 14px;
+  }
+  
+  .track p {
+    font-size: 12px;
+  }
+}

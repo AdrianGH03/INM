@@ -10,9 +10,10 @@ function Pagination({ currentPage, setCurrentPage, tracksPerPage, filteredTracks
     };
 
     return (
-        <div>
-            <button onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
-            <button onClick={handleNextPage} disabled={(currentPage * tracksPerPage) >= filteredTracks.length}>Next</button>
+        <div className='pagination-buttons'>
+            <button onClick={handlePreviousPage} disabled={currentPage === 1}><i class="bi bi-arrow-left-circle"></i></button>
+            <span>{currentPage}</span>
+            <button onClick={handleNextPage} disabled={(currentPage * tracksPerPage) >= filteredTracks.length}><i class="bi bi-arrow-right-circle"></i></button>
         </div>
     );
 }

@@ -17,10 +17,12 @@ exports.getTracksFromPlaylist = async (req, res) => {
             });
 
             userPlaylist.data.items.forEach(item => {
-                allSongs.push(item);
-                item.track.artists.forEach(artist => {
-                    artistIds.add(artist.id);
-                });
+                if (item.track && item.track.artists) {
+                    allSongs.push(item);
+                    item.track.artists.forEach(artist => {
+                        artistIds.add(artist.id);
+                    });
+                }
             });
 
             nextURL = userPlaylist.data.next;

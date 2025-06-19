@@ -1,32 +1,38 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../contexts/UserContext';
-import Playlists from '../components/Playlists';
-import Tracks from '../components/Tracks';
-import Pagination from '../components/Pagination';
-import Genres from '../components/Genres';
-import SimilarTracks from '../components/SimilarTracks';
+import Playlists from '../components/Main/Playlists';
+import Tracks from '../components/TrackDisplay/Tracks';
+import Pagination from '../components/Buttons/Pagination';
+import Genres from '../components/Buttons/Genres';
+import SimilarTracks from '../components/TrackDisplay/SimilarTracks';
 
-function Home() {
+function Home(props) {
+    const { 
+        currentPlaylistId, 
+        setCurrentPlaylistId,
+        setCurrentTrack,
+        tracks,
+        setTracks,
+        filteredTracks,
+        setFilteredTracks,
+        trackIds,
+        setTrackIds,
+        setCurrentQueueIndex
+    } = props;
+    
     const { profile } = useContext(UserContext);
     const [playlists, setPlaylists] = useState(() => {
         const savedPlaylists = localStorage.getItem('playlists');
         return savedPlaylists ? JSON.parse(savedPlaylists) : [];
-    });
-    const [tracks, setTracks] = useState([]);
-    const [filteredTracks, setFilteredTracks] = useState([]);
-    const [tracksShow, setTracksShow] = useState(null);
-    const [similarTracks, setSimilarTracks] = useState([]);
-    const [trackIds, setTrackIds] = useState([]);
+    });    const [tracksShow, setTracksShow] = useState(null);
     const [trackIdsShow, setTrackIdsShow] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const tracksPerPage = 50;
+    const tracksPerPage = 48;
     const [genres, setGenres] = useState([]);
-    const [selectedGenre, setSelectedGenre] = useState(null);
-
-    const shuffleTracks = () => {
-        const shuffledTracks = [...tracks].sort(() => Math.random() - 0.5);
-        setTracks(shuffledTracks);
-        setFilteredTracks(shuffledTracks);
+    const [selectedGenre, setSelectedGenre] = useState(null);    
+    
+    const handleTrackSelect = (track) => {
+        setCurrentTrack(track);
     };
 
     const handleGenreClick = (genre) => {
@@ -40,24 +46,63 @@ function Home() {
         setCurrentPage(1);
     };
 
+    useEffect(() => {
+        if (currentPlaylistId) {
+            setTrackIds([]);
+            setTrackIdsShow(null);
+            setCurrentTrack(null); 
+        }
+    }, [currentPlaylistId, setCurrentTrack]);
+
     if (!profile) {
         return <div>Loading...</div>;
     }
 
     return (
-        <div>
-            <Playlists playlists={playlists} setPlaylists={setPlaylists} />
-            {/* <Tracks playlists={playlists} currentPage={currentPage} tracksPerPage={tracksPerPage} setTracks={setTracks} setFilteredTracks={setFilteredTracks} setGenres={setGenres} setTracksShow={setTracksShow} filteredTracks={filteredTracks} />
-            <h2>Your Playlists</h2>
-            <button onClick={shuffleTracks}>Shuffle Tracks</button>
-            <Genres genres={genres} handleGenreClick={handleGenreClick} />
-            <div className='track-container'>
-                {tracksShow}
-            </div>
-            <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} tracksPerPage={tracksPerPage} filteredTracks={filteredTracks} />
-            <SimilarTracks tracksShow={tracksShow} setTrackIds={setTrackIds} trackIds={trackIds} trackIdsShow={trackIdsShow} setTrackIdsShow={setTrackIdsShow} /> */}
-        </div>
+        <section className='home'>
+            {!currentPlaylistId ? (
+                    <Playlists
+                        playlists={playlists}
+                        setPlaylists={setPlaylists}
+                        currentPlaylistId={currentPlaylistId}
+                        setCurrentPlaylistId={setCurrentPlaylistId}
+                        setTracksShow={setTracksShow}
+                    />
+            ) : (           
+                <>
+                    <Tracks playlists={playlists} currentPlaylistId={currentPlaylistId} currentPage={currentPage} tracksPerPage={tracksPerPage} setTracks={setTracks} setFilteredTracks={setFilteredTracks} setGenres={setGenres} setTracksShow={setTracksShow} filteredTracks={filteredTracks} setCurrentTrack={setCurrentTrack} />
+                    {filteredTracks.length > 0 && (
+                        <Genres genres={genres} handleGenreClick={handleGenreClick} />
+                    )}
+                    <div className='track-container'>
+                        {tracksShow}
+                    </div>
+                    {filteredTracks.length > 0 && (
+                        <>
+                            <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} tracksPerPage={tracksPerPage} filteredTracks={filteredTracks} />
+                        </>
+                    )}
+                    
+                
+                    <SimilarTracks 
+                        tracksShow={tracksShow} 
+                        setTrackIds={setTrackIds} 
+                        trackIds={trackIds} 
+                        trackIdsShow={trackIdsShow} 
+                        setTrackIdsShow={setTrackIdsShow} 
+                        setCurrentTrack={setCurrentTrack}
+                        filteredTracks={filteredTracks}
+                        currentPage={currentPage}
+                        tracksPerPage={tracksPerPage}
+                        onTrackSelect={handleTrackSelect}
+                        setCurrentQueueIndex={setCurrentQueueIndex}
+                    />
+                </>
+            )}            
+            
+        </section>
     );
+
 }
 
 export default Home;

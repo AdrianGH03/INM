@@ -20,7 +20,7 @@ async function authorizeUser(req, res) {
 
         res.cookie('access_token', access_token, { httpOnly: true, secure: true });
         res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true });
-        res.redirect(`http://localhost:5173/home`);
+        res.redirect(`https://inm-25.vercel.app/home`);
     }
 }
 
@@ -51,7 +51,7 @@ async function getAccessToken(clientId, clientSecret, code) {
     params.append("client_secret", clientSecret);
     params.append("grant_type", "authorization_code");
     params.append("code", code);
-    params.append("redirect_uri", "http://localhost:5000/callback");
+    params.append("redirect_uri", "https://inmbe.vercel.app/callback");
     params.append("code_verifier", verifier);
 
     const result = await fetch("https://accounts.spotify.com/api/token", {
@@ -88,7 +88,7 @@ async function redirectToLogin(clientId, res) {
     const params = new URLSearchParams();
     params.append("client_id", clientId);
     params.append("response_type", "code");
-    params.append("redirect_uri", "http://localhost:5000/callback");
+    params.append("redirect_uri", "https://inmbe.vercel.app/callback");
     params.append("scope", "user-read-private user-read-email user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
