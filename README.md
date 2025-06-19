@@ -1,6 +1,6 @@
 # 🎵 INM Music Recommender
 
-**INM** (Intelligent New Music) is a music recommendation web application that analyzes your **Spotify playlists** and fetches **similar tracks** using **Deezer’s API**, helping you discover new music effortlessly.
+**INM** (I Need Music) is a music recommendation web application that analyzes your **Spotify playlists** and fetches **similar tracks** using **Deezer’s API**, helping you discover new music effortlessly.
 
 > Built with **React**, **Node.js**, and custom filtering logic to deliver fast, personalized song suggestions.
 
