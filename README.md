@@ -36,7 +36,9 @@
 ## 📸 Screenshots (Project is a WIP, but functional)
 
 ![image](https://github.com/user-attachments/assets/effe04e5-ddc6-4203-8b57-aff258fc7c81)
-![image](https://github.com/user-attachments/assets/402531d1-b83d-4555-84a8-2e688481d2f9)
+![image](https://github.com/user-attachments/assets/cdbe9504-fab1-4be0-b1b2-b20650a418fa)
+![image](https://github.com/user-attachments/assets/f572fef1-5f47-4a5a-98e4-db84031e6bc0)
+
 
 
 ## License
