@@ -19,8 +19,8 @@ async function authorizeUser(req, res) {
             return res.status(400).json({ error: 'Failed to obtain access or refresh token' });
         }
 
-        res.cookie('access_token', access_token, { httpOnly: true, secure: true });
-        res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true });
+        res.cookie('access_token', access_token, { httpOnly: true, secure: true, sameSite: 'none' });
+        res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true, sameSite: 'none' });
         res.redirect(`${process.env.FRONTEND_SITE_URL}/home`);
     }
 }
