@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const port = 5000;
 const authorizeUserRoute = require('./routes/authentication/authorizeUserRoute');
 const playlistRoute = require('./routes/playlists/playlistRoute');
 const tracksRoute = require('./routes/tracks/getTracksRoute');

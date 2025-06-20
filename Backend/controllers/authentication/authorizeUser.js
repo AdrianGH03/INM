@@ -1,18 +1,19 @@
 const axios = require('axios');
-const { LocalStorage } = require('node-localstorage');
-const localStorage = new LocalStorage('./scratch');
 require('dotenv').config();
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+const verifierStore = new Map();
 
 async function authorizeUser(req, res) {
     const params = new URLSearchParams(req.query);
     const code = params.get("code");
 
     if (!code) {
-        await redirectToLogin(clientId, res);
+        await redirectToLogin(clientId, res, req);
     } else {
-        const { access_token, refresh_token } = await getAccessToken(clientId, clientSecret, code);
+        // Use session ID or IP as key for demo purposes
+        const sessionKey = req.ip;
+        const { access_token, refresh_token } = await getAccessToken(clientId, clientSecret, code, sessionKey);
 
         if (!access_token || !refresh_token) {
             return res.status(400).json({ error: 'Failed to obtain access or refresh token' });
@@ -20,7 +21,7 @@ async function authorizeUser(req, res) {
 
         res.cookie('access_token', access_token, { httpOnly: true, secure: true });
         res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true });
-        res.redirect(`https://inm-25.vercel.app/home`);
+        res.redirect(`${process.env.SITE_URL}/home`);
     }
 }
 
@@ -43,15 +44,15 @@ function generateCodeVerifier(length) {
     return text;
 }
 
-async function getAccessToken(clientId, clientSecret, code) {
-    const verifier = localStorage.getItem("verifier");
+async function getAccessToken(clientId, clientSecret, code, sessionKey) {
+    const verifier = verifierStore.get(sessionKey);
 
     const params = new URLSearchParams();
     params.append("client_id", clientId);
     params.append("client_secret", clientSecret);
     params.append("grant_type", "authorization_code");
     params.append("code", code);
-    params.append("redirect_uri", "https://inmbe.vercel.app/callback");
+    params.append("redirect_uri", `${process.env.SITE_URL}/callback`);
     params.append("code_verifier", verifier);
 
     const result = await fetch("https://accounts.spotify.com/api/token", {
@@ -79,16 +80,18 @@ async function getNewAccessToken(refreshToken) {
     return access_token;
 }
 
-async function redirectToLogin(clientId, res) {
+async function redirectToLogin(clientId, res, req) {
     const verifier = generateCodeVerifier(128);
     const challenge = await generateCodeChallenge(verifier);
 
-    localStorage.setItem("verifier", verifier);
+    // Use session ID or IP as key for demo purposes
+    const sessionKey = req.ip;
+    verifierStore.set(sessionKey, verifier);
 
     const params = new URLSearchParams();
     params.append("client_id", clientId);
     params.append("response_type", "code");
-    params.append("redirect_uri", "https://inmbe.vercel.app/callback");
+    params.append("redirect_uri", `${process.env.SITE_URL}/callback`);
     params.append("scope", "user-read-private user-read-email user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
