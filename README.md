@@ -8,6 +8,10 @@
 
 ---
 
+## 🎧💡 Why INM over Spotify's recommended?
+
+- Spotify’s recommendations often feel repetitive, relying on what’s trending, popular, or only top genres of the playlist. I wanted a tool that analyzes my playlists and pulls fresh suggestions for all tracks from Deezer to break out of that bubble. INM helps me discover tracks I wouldn’t normally find, offering more variety and truly personalized results. INM keeps your playlist sounding the same, with a different vibe each time.
+
 ## 🚀 Key Features
 
 - 🔄 **Playlist Sync**
