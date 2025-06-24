@@ -3,6 +3,7 @@
 @import './Main/Carousel.css';
 @import './Home/Playlists.css';
 @import './Home/Tracks.css';
+@import './Layout/LoadingSpinner.css';
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Stalinist+One&display=swap');
 

@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import LoadingSpinner from '../Loading/LoadingSpinner';
 
 function Tracks({ playlists, currentPage, currentPlaylistId, tracksPerPage, setTracks, setFilteredTracks, setGenres, setTracksShow, filteredTracks = [], setCurrentTrack }) {
-    useEffect(() => {
+    const [isLoading, setIsLoading] = useState(false);    useEffect(() => {
         if (playlists.playlists && playlists.playlists.length > 0 && currentPlaylistId) {
             const getTracks = async () => {
+                setIsLoading(true);
                 try {
                     const response = await fetch(`${import.meta.env.VITE_API_SITE_URL}/playlists/getPlayListTracks/${currentPlaylistId}?page=${currentPage}&limit=${tracksPerPage}`, {
                         credentials: 'include'
@@ -25,15 +27,19 @@ function Tracks({ playlists, currentPage, currentPlaylistId, tracksPerPage, setT
                     
                 } catch (error) {
                     console.error('Error fetching playlist tracks:', error.message);
+                } finally {
+                    setIsLoading(false);
                 }
             };
             getTracks();
         }
-    }, [playlists, currentPlaylistId, setTracks, setFilteredTracks, setGenres]);
-
+    }, [playlists, currentPlaylistId, setTracks, setFilteredTracks, setGenres]);    
+    
     //Show tracks for user playlist, tracksShow = true means tracks are shown, false means no tracks to show
     useEffect(() => {
-        if (filteredTracks.length > 0) {
+        if (isLoading) {
+            setTracksShow(<LoadingSpinner text="Loading tracks..." />);
+        } else if (filteredTracks.length > 0) {
             const startIndex = (currentPage - 1) * tracksPerPage;
             const endIndex = startIndex + tracksPerPage;
             const tracksToShow = filteredTracks.slice(startIndex, endIndex);              
@@ -60,7 +66,7 @@ function Tracks({ playlists, currentPage, currentPlaylistId, tracksPerPage, setT
         } else {
             setTracksShow(null);
         }
-    }, [filteredTracks, currentPage]);
+    }, [filteredTracks, currentPage, isLoading]);
 
     return null;
 }

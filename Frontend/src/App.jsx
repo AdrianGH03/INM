@@ -63,7 +63,7 @@ function HomeWrapper() {
                     navigate('/')
                 }
                 console.error('Error fetching profile:', error);
-            }
+            } 
         };
 
         fetchProfile();
@@ -73,20 +73,20 @@ function HomeWrapper() {
     return (
         <div className='app-container'>
             <Header profile={profile} />
-            <AppRoutes 
-                currentPlaylistId={currentPlaylistId}
-                setCurrentPlaylistId={setCurrentPlaylistId}
-                currentTrack={currentTrack}
-                setCurrentTrack={setCurrentTrack}
-                tracks={tracks}
-                setTracks={setTracks}
-                filteredTracks={filteredTracks}
-                setFilteredTracks={setFilteredTracks}
-                trackIds={trackIds}
-                setTrackIds={setTrackIds}
-                onShuffleTracks={handleShuffleTracks}
-                setCurrentQueueIndex={setCurrentQueueIndex}
-            />
+                <AppRoutes 
+                    currentPlaylistId={currentPlaylistId}
+                    setCurrentPlaylistId={setCurrentPlaylistId}
+                    currentTrack={currentTrack}
+                    setCurrentTrack={setCurrentTrack}
+                    tracks={tracks}
+                    setTracks={setTracks}
+                    filteredTracks={filteredTracks}
+                    setFilteredTracks={setFilteredTracks}
+                    trackIds={trackIds}
+                    setTrackIds={setTrackIds}
+                    onShuffleTracks={handleShuffleTracks}
+                    setCurrentQueueIndex={setCurrentQueueIndex}
+                />
             <Footer 
                 currentPlaylistId={currentPlaylistId}
                 onBackToPlaylists={handleBackToPlaylists}

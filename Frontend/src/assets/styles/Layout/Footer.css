@@ -11,6 +11,22 @@
   display: block; 
 }
 
+/* Audio loading spinner */
+.audio-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinning {
+  animation: spin-audio 1s linear infinite;
+}
+
+@keyframes spin-audio {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .footer-content {
   display: flex;
   align-items: center;

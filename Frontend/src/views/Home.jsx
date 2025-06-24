@@ -5,6 +5,7 @@ import Tracks from '../components/TrackDisplay/Tracks';
 import Pagination from '../components/Buttons/Pagination';
 import Genres from '../components/Buttons/Genres';
 import SimilarTracks from '../components/TrackDisplay/SimilarTracks';
+import LoadingSpinner from '../components/Loading/LoadingSpinner';
 
 function Home(props) {
     const { 
@@ -52,10 +53,14 @@ function Home(props) {
             setTrackIdsShow(null);
             setCurrentTrack(null); 
         }
-    }, [currentPlaylistId, setCurrentTrack]);
-
+    }, [currentPlaylistId, setCurrentTrack]);    
+    
     if (!profile) {
-        return <div>Loading...</div>;
+        return (
+            <section className='home'>
+                <LoadingSpinner text="Loading your profile..." />
+            </section>
+        );
     }
 
     return (

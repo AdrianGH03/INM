@@ -1,13 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import '../../assets/styles/Layout/Footer.css';
 
 const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, currentTrack, trackIds, setCurrentTrack, setTrackIds, currentQueueIndex, setCurrentQueueIndex }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasAudio, setHasAudio] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [queue, setQueue] = useState([]);
   const [showQueueModal, setShowQueueModal] = useState(false);
-  const [volume, setVolume] = useState(50);  
+  const [volume, setVolume] = useState(15);
 
 
   useEffect(() => {
@@ -44,10 +45,10 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
     }
   }, [volume]);
   
-
   useEffect(() => {
     if (currentTrack?.track?.preview_url) {
       setHasAudio(true);
+      setIsLoadingAudio(true);
       if (audioRef.current) {
        
         if (isPlaying) {
@@ -59,14 +60,17 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
 
         audioRef.current.play().then(() => {
           setIsPlaying(true);
+          setIsLoadingAudio(false);
         }).catch((error) => {
           console.log('Autoplay prevented:', error);
           setIsPlaying(false);
+          setIsLoadingAudio(false);
         });
       }
     } else {
       setHasAudio(false);
       setIsPlaying(false);
+      setIsLoadingAudio(false);
       if (audioRef.current && !audioRef.current.paused) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
@@ -75,16 +79,22 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
   }, [currentTrack]);
 
 
-
   const handlePlayPause = () => {
-    if (!hasAudio || !audioRef.current) return;
+    if (!hasAudio || !audioRef.current || isLoadingAudio) return;
     
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
-      setIsPlaying(true);
+      setIsLoadingAudio(true);
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+        setIsLoadingAudio(false);
+      }).catch((error) => {
+        console.log('Play failed:', error);
+        setIsPlaying(false);
+        setIsLoadingAudio(false);
+      });
     }
   };
 
@@ -194,20 +204,28 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
           </button>          
           <button className="footer-control-btn" onClick={handlePreviousTrack} title="Previous" disabled={queue.length === 0}>
             <i className="bi bi-skip-backward-fill"></i>
-          </button>
-
-          <button 
+          </button>          <button 
             className="footer-play-btn" 
             onClick={handlePlayPause}
-            disabled={!hasAudio}
-            title={hasAudio ? (isPlaying ? "Pause" : "Play") : "No audio available"}
+            disabled={!hasAudio || isLoadingAudio}
+            title={
+              isLoadingAudio ? "Loading audio..." : 
+              hasAudio ? (isPlaying ? "Pause" : "Play") : 
+              "No audio available"
+            }
             style={{ 
-              opacity: hasAudio ? 1 : 0.5,
-              cursor: hasAudio ? 'pointer' : 'not-allowed'
+              opacity: (hasAudio && !isLoadingAudio) ? 1 : 0.5,
+              cursor: (hasAudio && !isLoadingAudio) ? 'pointer' : 'not-allowed'
             }}
           >
-            <i className={`bi ${isPlaying ? 'bi-pause-fill' : 'bi-play-fill'}`}></i>
-          </button>  
+            {isLoadingAudio ? (
+              <div className="audio-loading-spinner">
+                <i className="bi bi-arrow-clockwise spinning"></i>
+              </div>
+            ) : (
+              <i className={`bi ${isPlaying ? 'bi-pause-fill' : 'bi-play-fill'}`}></i>
+            )}
+          </button>
 
           <button className="footer-control-btn" onClick={handleNextTrack} title="Next" disabled={queue.length === 0}>
             <i className="bi bi-skip-forward-fill"></i>          

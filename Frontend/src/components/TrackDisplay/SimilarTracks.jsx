@@ -1,11 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import LoadingSpinner from '../Loading/LoadingSpinner';
 
 function SimilarTracks({ setCurrentQueueIndex, setTrackIds, trackIds, trackIdsShow, setTrackIdsShow, setCurrentTrack, filteredTracks, currentPage, tracksPerPage, onTrackSelect }) {
     
     const audioRefs = useRef([]);  
-    
-    useEffect(() => {
-        if (trackIds.length > 0) {
+    const [isLoadingSimilar, setIsLoadingSimilar] = useState(false);
+      useEffect(() => {
+        if (isLoadingSimilar) {
+            setTrackIdsShow(<LoadingSpinner text="Finding similar tracks..." />);
+        } else if (trackIds.length > 0) {
             const trackIdsShow = trackIds.map((track, index) => {
                 return (
                     <div key={`${track.id}-${index}`} className='track similar-track'>
@@ -45,7 +48,7 @@ function SimilarTracks({ setCurrentQueueIndex, setTrackIds, trackIds, trackIdsSh
         } else {
             setTrackIdsShow(null);
         }
-    }, [trackIds, setTrackIdsShow, setCurrentTrack]);
+    }, [trackIds, setTrackIdsShow, setCurrentTrack, isLoadingSimilar]);
 
     
     useEffect(() => {
@@ -56,8 +59,7 @@ function SimilarTracks({ setCurrentQueueIndex, setTrackIds, trackIds, trackIdsSh
         });
     }, [trackIdsShow]);        
     
-    
-    const handleGetSimilarTracks = () => {
+      const handleGetSimilarTracks = () => {
         if (filteredTracks && filteredTracks.length > 0) {
             if (onTrackSelect) {
                 onTrackSelect(null); 
@@ -65,6 +67,7 @@ function SimilarTracks({ setCurrentQueueIndex, setTrackIds, trackIds, trackIdsSh
             
             setTrackIds([]);
             setTrackIdsShow(null);
+            setIsLoadingSimilar(true);
             
             const startIndex = (currentPage - 1) * tracksPerPage;
             const endIndex = startIndex + tracksPerPage;
@@ -103,46 +106,51 @@ function SimilarTracks({ setCurrentQueueIndex, setTrackIds, trackIds, trackIdsSh
                                 setTrackIds(data2);
                             } catch (error) {
                                 console.error('Error fetching track ids:', error.message);
+                            } finally {
+                                setIsLoadingSimilar(false);
                             }
                         }
 
                         getTrackIds();
+                    } else {
+                        setIsLoadingSimilar(false);
                     }
                 } catch (error) {
                     console.error('Error fetching similar tracks:', error.message);
+                    setIsLoadingSimilar(false);
                 }
             }
 
             getSimilarTracks(onlyNamesAndArtists);
         }
-    };    
+    };
     
     return (
         <div className="similar-tracks-section">
             {filteredTracks && filteredTracks.length > 0 && (
                 <div className="similar-tracks-header">
                     <h2>Discover Similar Music</h2>
-                    <p>Find new tracks that match your playlist's vibe</p>
-                    <button 
+                    <p>Find new tracks that match your playlist's vibe</p>                    <button 
                         onClick={handleGetSimilarTracks} 
                         className="get-similar-tracks-btn"
-                        disabled={!filteredTracks || filteredTracks.length === 0}
+                        disabled={!filteredTracks || filteredTracks.length === 0 || isLoadingSimilar}
                     >
                         <i className="bi bi-music-note-beamed"></i>
-                        Get Similar Tracks
+                        {isLoadingSimilar ? 'Finding Tracks...' : 'Get Similar Tracks'}
                     </button>
                 </div>
             )}
-            
-            {trackIdsShow && (
+              {trackIdsShow && (
                 <>
-                    <div className="similar-tracks-results-header">
-                        <h3>
-                            <i className="bi bi-soundwave"></i>
-                            Similar Tracks ({trackIds.length} found)
-                        </h3>
-                        <p>Click on track images to play audio through the player</p>
-                    </div>
+                    {!isLoadingSimilar && (
+                        <div className="similar-tracks-results-header">
+                            <h3>
+                                <i className="bi bi-soundwave"></i>
+                                Similar Tracks ({trackIds.length} found)
+                            </h3>
+                            <p>Click on track images to play audio through the player</p>
+                        </div>
+                    )}
                     <div className='track-container similar-tracks-container'>
                         {trackIdsShow}
                     </div>
