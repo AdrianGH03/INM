@@ -12,6 +12,7 @@ function Home(props) {
         currentPlaylistId, 
         setCurrentPlaylistId,
         setCurrentTrack,
+        currentTrack,
         tracks,
         setTracks,
         filteredTracks,
@@ -101,6 +102,7 @@ function Home(props) {
                         tracksPerPage={tracksPerPage}
                         onTrackSelect={handleTrackSelect}
                         setCurrentQueueIndex={setCurrentQueueIndex}
+                        currentTrack={currentTrack}
                     />
                 </>
             )}            

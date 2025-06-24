@@ -8,7 +8,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [queue, setQueue] = useState([]);
   const [showQueueModal, setShowQueueModal] = useState(false);
-  const [volume, setVolume] = useState(15);
+  const [volume, setVolume] = useState(5); 
 
 
   useEffect(() => {
@@ -30,6 +30,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
       if (!currentTrack && formattedQueue.length > 0) {
         setCurrentQueueIndex(0);
         setCurrentTrack(formattedQueue[0]);
+        
       }
     } else {
       setQueue([]);
@@ -44,8 +45,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
       audioRef.current.volume = volume / 100;
     }
   }, [volume]);
-  
-  useEffect(() => {
+    useEffect(() => {
     if (currentTrack?.track?.preview_url) {
       setHasAudio(true);
       setIsLoadingAudio(true);
@@ -56,13 +56,14 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
         }
        
         audioRef.current.src = currentTrack.track.preview_url;
+        audioRef.current.volume = volume / 100; 
         audioRef.current.load();
 
         audioRef.current.play().then(() => {
           setIsPlaying(true);
           setIsLoadingAudio(false);
         }).catch((error) => {
-          console.log('Autoplay prevented:', error);
+          
           setIsPlaying(false);
           setIsLoadingAudio(false);
         });
@@ -76,8 +77,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
         audioRef.current.currentTime = 0;
       }
     }
-  }, [currentTrack]);
-
+  }, [currentTrack, volume]); 
 
   const handlePlayPause = () => {
     if (!hasAudio || !audioRef.current || isLoadingAudio) return;
@@ -87,11 +87,12 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
       setIsPlaying(false);
     } else {
       setIsLoadingAudio(true);
+      audioRef.current.volume = volume / 100; 
       audioRef.current.play().then(() => {
         setIsPlaying(true);
         setIsLoadingAudio(false);
       }).catch((error) => {
-        console.log('Play failed:', error);
+        
         setIsPlaying(false);
         setIsLoadingAudio(false);
       });

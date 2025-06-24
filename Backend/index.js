@@ -13,7 +13,7 @@ const checkAndRefreshToken = require('./middleware/checkAccessToken');
 app.use(express.json());
 app.use(cookieParser());
 const corsOptions = {
-  origin: ['https://inm-25.vercel.app'],
+  origin: ['https://inm-25.vercel.app', 'http://localhost:5173'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: [
