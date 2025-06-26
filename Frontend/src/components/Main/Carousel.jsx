@@ -8,6 +8,7 @@ const albums = [
   { id: 5, img: 'alb5.jpg', title: 'Album 5' },
 ];
 
+//Home Page Carousel Component
 export default function Carousel() {
   return (
     <div className="carousel">

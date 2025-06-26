@@ -2,9 +2,17 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../Loading/LoadingSpinner';
 
-function Playlists({ playlists, setPlaylists, setCurrentPlaylistId, tracksShow }) {
+function Playlists({ 
+    playlists, 
+    setPlaylists, 
+    setCurrentPlaylistId, 
+    }) {
+        
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);    useEffect(() => {
+    const [isLoading, setIsLoading] = useState(false);    
+    
+    //Get users playlists from the backend using their credentials
+    useEffect(() => {
         if (!playlists.playlists || playlists.playlists.length === 0) {
             const getPlaylists = async () => {
                 setIsLoading(true);
@@ -27,7 +35,9 @@ function Playlists({ playlists, setPlaylists, setCurrentPlaylistId, tracksShow }
 
             getPlaylists();
         }
-    }, [navigate, playlists, setPlaylists]);    return (
+    }, [navigate, playlists, setPlaylists]);   
+    
+    return (
         <div className='playlists-container'>
             <h2>Choose a Playlist</h2>
             {isLoading ? (

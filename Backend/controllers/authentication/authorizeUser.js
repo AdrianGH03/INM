@@ -4,6 +4,7 @@ const clientId = process.env.SPOTIFY_CLIENT_ID;
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 const verifierStore = new Map();
 
+//Send user back to the frontend home page after successful login with access token and refresh token in cookies
 async function authorizeUser(req, res) {
     const params = new URLSearchParams(req.query);
     const code = params.get("code");
@@ -11,7 +12,6 @@ async function authorizeUser(req, res) {
     if (!code) {
         await redirectToLogin(clientId, res, req);
     } else {
-        // Use session ID or IP as key for demo purposes
         const sessionKey = req.ip;
         const { access_token, refresh_token } = await getAccessToken(clientId, clientSecret, code, sessionKey);
 
@@ -25,6 +25,7 @@ async function authorizeUser(req, res) {
     }
 }
 
+//Generate verifier
 async function generateCodeChallenge(codeVerifier) {
     const data = new TextEncoder().encode(codeVerifier);
     const digest = await crypto.subtle.digest('SHA-256', data);
@@ -44,6 +45,7 @@ function generateCodeVerifier(length) {
     return text;
 }
 
+//Creates access token
 async function getAccessToken(clientId, clientSecret, code, sessionKey) {
     const verifier = verifierStore.get(sessionKey);
 
@@ -65,6 +67,7 @@ async function getAccessToken(clientId, clientSecret, code, sessionKey) {
     return { access_token, refresh_token };
 }
 
+//Creates new access token using refresh token when the access token expires
 async function getNewAccessToken(refreshToken) {
     const params = new URLSearchParams();
     params.append("client_id", clientId);
@@ -80,11 +83,11 @@ async function getNewAccessToken(refreshToken) {
     return access_token;
 }
 
+//Redirects user to Spotify login page with necessary parameters on frontend
 async function redirectToLogin(clientId, res, req) {
     const verifier = generateCodeVerifier(128);
     const challenge = await generateCodeChallenge(verifier);
 
-    // Use session ID or IP as key for demo purposes
     const sessionKey = req.ip;
     verifierStore.set(sessionKey, verifier);
 
@@ -92,13 +95,17 @@ async function redirectToLogin(clientId, res, req) {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", `${process.env.SITE_URL}/callback`);
-    params.append("scope", "user-read-private user-read-email user-top-read");
+    params.append(
+        "scope",
+        "user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private"
+    );
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
     res.redirect(`https://accounts.spotify.com/authorize?${params.toString()}`);
 }
 
+//Gets user basic profile information
 async function getProfile(accessToken) {
     try {
         const result = await fetch("https://api.spotify.com/v1/me", {

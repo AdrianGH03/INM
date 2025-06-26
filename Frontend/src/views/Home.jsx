@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import Playlists from '../components/Main/Playlists';
 import Tracks from '../components/TrackDisplay/Tracks';
@@ -31,7 +32,8 @@ function Home(props) {
     const [currentPage, setCurrentPage] = useState(1);
     const tracksPerPage = 48;
     const [genres, setGenres] = useState([]);
-    const [selectedGenre, setSelectedGenre] = useState(null);    
+    const [selectedGenre, setSelectedGenre] = useState(null);   
+    const navigate = useNavigate(); 
     
     const handleTrackSelect = (track) => {
         setCurrentTrack(track);

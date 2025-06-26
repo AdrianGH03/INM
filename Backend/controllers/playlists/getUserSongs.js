@@ -1,10 +1,6 @@
-// 2. Get user's playlists and user's top items
-//     - https://api.spotify.com/v1/me/playlists
-//     - https://api.spotify.com/v1/me/top/{type}
-//     - playlist must be selectable by user
-
 const axios = require('axios');
 
+//Gets user playlists, top tracks, and top artists from Spotify API
 exports.getUserSongs = async (req, res) => {
     const accessToken = req.cookies.access_token
     const userSongs = {}

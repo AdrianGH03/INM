@@ -11,10 +11,12 @@ function SimilarTracks({
     currentPage,
     tracksPerPage,
     onTrackSelect
-}) {
+    }) {
+
     const audioRefs = useRef([]);
     const [isLoadingSimilar, setIsLoadingSimilar] = useState(false);
 
+    //Initialize audioRefs with empty audio elements for each trackId
     useEffect(() => {
         audioRefs.current.forEach(audio => {
             if (audio) {
@@ -45,6 +47,7 @@ function SimilarTracks({
 
             const getSimilarTracks = async (tracks) => {
                 try {
+                    //Fetch similar tracks from the backend using the names and artists of the current page tracks
                     const response = await fetch(`${import.meta.env.VITE_API_SIMTRAC_URL}`, {
                         method: 'POST',
                         headers: {
@@ -57,6 +60,7 @@ function SimilarTracks({
                     if (data.length > 0) {
                         const getTrackIds = async () => {
                             try {
+                                //Fetch track ids from the backend using the similar tracks data
                                 const response = await fetch(`${import.meta.env.VITE_API_FINDTID_URL}`, {
                                     method: 'POST',
                                     headers: {
@@ -90,6 +94,7 @@ function SimilarTracks({
 
     return (
         <div className="similar-tracks-section">
+            {/* Find the similar tracks controls - Top */}
             {filteredTracks && filteredTracks.length > 0 && (
                 <div className="similar-tracks-header">
                     <h2>Discover Similar Music</h2>
@@ -104,7 +109,11 @@ function SimilarTracks({
                     </button>
                 </div>
             )}
+
+
             {isLoadingSimilar && <LoadingSpinner text="Finding similar tracks..." />}
+
+            {/* Show similar tracks results and add functionality to make them playable on click - Bottom */}
             {!isLoadingSimilar && trackIds.length > 0 && (
                 <>
                     <div className="similar-tracks-results-header">

@@ -3,10 +3,12 @@ import Carousel from '../components/Main/Carousel'
 const MainPage = () => {
   return (
     <>
+        {/* Home Page Carousel - Top Section */}
         <div className="carousel-section">
             <Carousel />
         </div>
     
+        {/* Home Page Cards - Bottom Section */}
         <section className="home-cards-container animate__backInUp">
             <div className="home-card">
                 <h2>New sounds, same soul.</h2>

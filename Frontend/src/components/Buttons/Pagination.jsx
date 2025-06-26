@@ -1,4 +1,11 @@
-function Pagination({ currentPage, setCurrentPage, tracksPerPage, filteredTracks }) {
+//Handle pagination for playlist tracks lists, max 48-50 per page.
+function Pagination({ 
+    currentPage, 
+    setCurrentPage, 
+    tracksPerPage, 
+    filteredTracks 
+    }) {
+        
     const handleNextPage = () => {
         if ((currentPage * tracksPerPage) < filteredTracks.length) {
             setCurrentPage(prevPage => prevPage + 1);

@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { getNewAccessToken } = require('../controllers/authentication/authorizeUser');
 
+//Middleware to check and refresh Spotify access token
 async function checkAndRefreshToken(req, res, next) {
     let accessToken = req.cookies.access_token;
     const refreshToken = req.cookies.refresh_token;

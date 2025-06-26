@@ -1,3 +1,4 @@
+/* Playlists Component Styles */
 .playlists-container{
   display: flex;
   flex-direction: column;
@@ -77,6 +78,7 @@
   transform: scale(1.05);
 }
 
+/* Laptop styles */
 @media (max-width: 1024px) {
   .playlists-list {
     grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -100,6 +102,7 @@
   }
 }
 
+/* Tablet styles */
 @media (max-width: 768px) {
   .playlists-container {
     padding: 0.5rem;
@@ -134,6 +137,7 @@
   }
 }
 
+/* Mobile styles */
 @media (max-width: 480px) {
   .playlists-container {
     padding: 0.3rem;

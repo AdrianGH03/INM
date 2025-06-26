@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import '../../assets/styles/Layout/Footer.css';
+
 
 const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, currentTrack, trackIds, setCurrentTrack, setTrackIds, currentQueueIndex, setCurrentQueueIndex }) => {
   const audioRef = useRef(null);
@@ -9,8 +9,24 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
   const [queue, setQueue] = useState([]);
   const [showQueueModal, setShowQueueModal] = useState(false);
   const [volume, setVolume] = useState(5); 
+  const [isTrackAdded, setIsTrackAdded] = useState(false);
+  const [addIconHover, setAddIconHover] = useState(false);
+  const [showSuccessPulse, setShowSuccessPulse] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  //Check if user is on a mobile to adjust UI accordingly with playlist add/remove icons
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
 
+  //Format the queue based on trackIds and set the current track to the first track in the queue
   useEffect(() => {
     if (trackIds && trackIds.length > 0) {
       const formattedQueue = trackIds.map(track => ({
@@ -38,14 +54,26 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
     }
   }, [trackIds, currentTrack, setCurrentTrack]);
 
+  //Reset track added state when current track changes for dynamic updates of add/remove icons
+  useEffect(() => {
+    if (!currentTrack || !currentTrack.track?.id) {
+      setIsTrackAdded(false);
+      return;
+    }
+    setIsTrackAdded(false);
+    setAddIconHover(false);
+  }, [currentTrack]);
 
-  // Handle audio volume
+
+  //Handle audio initial volume
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume / 100;
     }
   }, [volume]);
-    useEffect(() => {
+
+  //Load audio when current track changes
+  useEffect(() => {
     if (currentTrack?.track?.preview_url) {
       setHasAudio(true);
       setIsLoadingAudio(true);
@@ -79,6 +107,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
     }
   }, [currentTrack, volume]); 
 
+  //Handle audio element cleanup on unmount and play state
   const handlePlayPause = () => {
     if (!hasAudio || !audioRef.current || isLoadingAudio) return;
     
@@ -99,12 +128,13 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
     }
   };
 
-
+  //Handle audio ended event to automatically play next track
   const handleAudioEnded = () => {
     setIsPlaying(false);
     handleNextTrack();
   };
 
+  //Handle playing next track in the formatted queue
   const handleNextTrack = () => {
     if (queue.length === 0) return;
     
@@ -123,6 +153,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
     setCurrentTrack(queue[nextIndex]);
   };
 
+  //Handle playing previous track in the formatted queue
   const handlePreviousTrack = () => {
     if (queue.length === 0) return;
     let prevIndex;
@@ -141,7 +172,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
     setCurrentTrack(queue[prevIndex]);
   };  
   
-  
+  //Remove the track from the queue and adjust the current track index accordingly
   const handleRemoveFromQueue = (indexToRemove) => {
     const newTrackIds = trackIds.filter((_, index) => index !== indexToRemove);
     setTrackIds(newTrackIds);
@@ -154,9 +185,56 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
     }
   };
 
+  //Handle volume change from the slider
   const handleVolumeChange = (e) => {
     const newVolume = parseInt(e.target.value);
     setVolume(newVolume);
+  };
+
+  //Call backend for adding tracks to the playlist when user clicks the add button
+  const addTrackToPlaylist = async (playlistId, trackId) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_ADD_TRACK_URL}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ trackURI: trackId, playlistId: playlistId }),
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to add track: ${response.statusText}`);
+      } else {
+        setIsTrackAdded(true);
+        setShowSuccessPulse(true);
+        setTimeout(() => setShowSuccessPulse(false), 600);
+      }
+    } catch (error) {
+      setIsTrackAdded(false);
+      console.error('Error adding track:', error);
+    }
+  };
+
+  //Call backend for removing tracks from the playlist when user clicks the remove button
+  const removeTrackFromPlaylist = async (playlistId, trackId) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_REMOVE_TRACK_URL}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ trackURI: trackId, playlistId: playlistId })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to remove track: ${response.statusText}`);
+      } else { 
+        setIsTrackAdded(false); 
+      }
+    } catch (error) {
+      console.error('Error removing track:', error);
+    }
   };
 
   if (!currentPlaylistId) return null;
@@ -166,6 +244,7 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
   return (
     <footer className="footer-playbar">
       <div className="footer-content">
+
         {/* Left section - Current track info */}
         <div className="footer-track-info">
           {currentTrack ? (
@@ -183,7 +262,42 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
                   {currentTrack.track?.artists?.[0]?.name || 'Unknown artist'}
                 </span>
               </div>
+
+              {/* Footer Add to Playlist Button next to track */}
+              <div className="footer-add-track">
+                <button
+                  className={`footer-add-btn ${isTrackAdded ? 'added' : ''} ${showSuccessPulse ? 'success-pulse' : ''}`}
+                  onClick={() => {
+                    if (!isTrackAdded) {
+                      addTrackToPlaylist(currentPlaylistId, currentTrack.track.id);
+                    } else if (addIconHover || isMobile) {
+                      removeTrackFromPlaylist(currentPlaylistId, currentTrack.track.id);
+                    }
+                  }}
+                  onMouseEnter={() => !isMobile && setAddIconHover(true)}
+                  onMouseLeave={() => !isMobile && setAddIconHover(false)}
+                  onTouchStart={() => isMobile && setAddIconHover(true)}
+                  onTouchEnd={() => isMobile && setTimeout(() => setAddIconHover(false), 150)}
+                  title={
+                    !isTrackAdded
+                      ? 'Add to Playlist'
+                      : (addIconHover || isMobile)
+                      ? 'Remove from Playlist'
+                      : 'Added to Playlist'
+                  }
+                >
+                  {!isTrackAdded ? (
+                    <i className="bi bi-plus-circle"></i>
+                  ) : (addIconHover || (isMobile && isTrackAdded)) ? (
+                    <i className="bi bi-dash-circle"></i>
+                  ) : (
+                    <i className="bi bi-check-circle"></i>
+                  )}
+                </button>
+              </div>
             </>
+
+            
           ) : (
             <>
               <div className="footer-track-image-placeholder">
@@ -196,6 +310,8 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
             </>
           )}
         </div>
+
+
 
         {/* Center section - Playback controls */}
         <div className="footer-controls">
@@ -230,9 +346,6 @@ const Footer = ({ currentPlaylistId, onBackToPlaylists, onShuffleTracks, current
 
           <button className="footer-control-btn" onClick={handleNextTrack} title="Next" disabled={queue.length === 0}>
             <i className="bi bi-skip-forward-fill"></i>          
-          </button>
-          <button className="footer-control-btn" onClick={() => setCurrentTrack(null)} title="Repeat">
-              <i className="bi bi-arrow-repeat"></i>
           </button>
 
         </div>

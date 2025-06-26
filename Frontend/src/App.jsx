@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext} from 'react';
 
 import { UserContext } from './contexts/UserContext';
 import { AppRoutes } from './routes/AppRoutes';
@@ -46,6 +46,7 @@ function HomeWrapper() {
         }
     };
 
+    //Check if user is logged in, if not redirect to login page
     useEffect(() => {
         const fetchProfile = async () => {
             try {

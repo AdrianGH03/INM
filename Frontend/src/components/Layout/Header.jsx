@@ -5,10 +5,13 @@ const Header = ({ profile }) => {
     <>
         <header className="header">
             <nav className="header-container">
+                
+                {/* Right Side of Header - Logo */}
                 <a href="/" alt="Go Home" className="header-logo-click">
                     <img src="INMLogo.png" alt="Go Home" className="header-logo" />
                 </a>
                 
+                {/* Left Side of Header - Navigation Links and Profile Pic */}
                 {profile ? (     
                     <a href="/home" className="header-profile-click">               
                         <div className="header-profile">

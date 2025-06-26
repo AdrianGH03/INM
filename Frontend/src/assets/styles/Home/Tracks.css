@@ -1,4 +1,4 @@
-/* General Styles */
+/* Track and Similar Tracks Styles */
 .track-container{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -242,6 +242,7 @@
   padding: 2rem 0;
   border-top: 2px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  margin-bottom: 5rem;
 }
 
 .similar-tracks-header {
@@ -338,7 +339,7 @@
   display: block;
 }
 
-/* Responsive adjustments for similar tracks */
+/* Tablet for similar tracks */
 @media (max-width: 768px) {
   .similar-tracks-header h2 {
     font-size: 1.5rem;
@@ -362,6 +363,7 @@
   }
 }
 
+/* Laptop for tracks */
 @media (max-width: 1024px) {
   .track-container {
     grid-template-columns: repeat(4, 1fr);
@@ -427,6 +429,7 @@
   }
 }
 
+/* Tablet for tracks */
 @media (max-width: 768px) {
   .track-container {
     grid-template-columns: repeat(3, 1fr);
@@ -492,7 +495,7 @@
   }
 }
 
-/* Laptop and desktop - show row layout with text */
+/* Laptop and desktop for tracks */
 @media (min-width: 1200px) {
   .track-container {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

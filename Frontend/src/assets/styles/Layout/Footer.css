@@ -46,6 +46,81 @@
   max-width: 300px;
 }
 
+.footer-add-track {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.footer-add-btn {
+  background: transparent;
+  border: none;
+  color: #b3b3b3;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-add-btn i {
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.footer-add-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.footer-add-btn:hover i {
+  color: #ffffff;
+}
+
+/* Add button states */
+.footer-add-btn.added {
+  color: #1db954;
+}
+
+.footer-add-btn.added:hover {
+  background: rgba(255, 59, 48, 0.15);
+  color: #ff3b30;
+}
+
+.footer-add-btn.added:hover i {
+  color: #ff3b30;
+}
+
+.footer-add-btn:active {
+  transform: scale(0.95);
+}
+
+/* Pulse animation for successful add */
+.footer-add-btn.success-pulse {
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    background: rgba(29, 185, 84, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    background: rgba(29, 185, 84, 0.6);
+    transform: scale(1.15);
+  }
+  100% {
+    background: rgba(29, 185, 84, 0.1);
+    transform: scale(1);
+  }
+}
+
 .footer-track-image {
   width: 48px;
   height: 48px;
@@ -446,50 +521,117 @@
 }
 
 
-/* Mobile styles */
+/* Tablet styles for footer controls*/
 @media (max-width: 768px) {
   .footer-content {
-    padding: 0.5rem;
-    flex-direction: column;
-    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    flex-direction: row;
+    gap: 0.75rem;
+    height: 64px;
+    align-items: center;
   }
   
   .footer-track-info {
-    display: none;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .footer-track-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+  }
+  
+  .footer-track-image-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+  }
+  
+  .footer-track-details {
+    flex: 1;
+    min-width: 0;
+    margin-right: 0;
+  }
+  
+  .footer-track-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.1rem;
+  }
+  
+  .footer-track-artist {
+    font-size: 0.7rem;
+    opacity: 0.8;
+  }
+  
+  .footer-add-track {
+    display: flex;
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+  
+  .footer-add-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+  
+  .footer-add-btn i {
+    font-size: 1rem;
   }
   
   .footer-controls {
-    order: 1;
-    max-width: 100%;
-    gap: 1rem;
+    order: 0;
+    flex: 0 0 auto;
+    gap: 0.5rem;
+    justify-content: center;
+    max-width: none;
+  }
+  
+  .footer-control-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
   }
   
   .footer-control-btn i {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   
   .footer-play-btn {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
   }
   
   .footer-play-btn i {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
   
+  /* Mobile right controls - minimal like Spotify */
   .footer-right-controls {
-    order: 2;
-    max-width: 100%;
-    justify-content: center;
-    gap: 1.5rem;
+    order: 0;
+    flex: 0 0 auto;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    max-width: none;
+  }
+  
+  .footer-right-controls .footer-control-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .footer-right-controls .footer-control-btn i {
+    font-size: 1rem;
   }
   
   .footer-volume-control {
     display: none;
-  }
-
-  .footer-right-controls .footer-control-btn i {
-    font-size: 1.3rem;
   }
   
   .queue-btn {
@@ -500,12 +642,13 @@
     top: -6px;
     right: -6px;
     font-size: 0.6rem;
-    min-width: 16px;
-    height: 16px;
+    min-width: 14px;
+    height: 14px;
+    padding: 0.1rem 0.25rem;
   }
 
   .home {
-    padding-bottom: 100px;
+    padding-bottom: 80px;
   }
 }
 
@@ -515,6 +658,7 @@
   }
 }
 
+/* Laptop styles for footer controls */
 @media (min-width: 1024px) {
   .footer-content {
     padding: 1rem 2rem;
@@ -524,6 +668,10 @@
   
   .footer-track-info {
     display: flex;
+  }
+  
+  .footer-add-track {
+    display: block;
   }
   
   .footer-controls {
@@ -546,7 +694,7 @@
   }
 }
 
-/* Responsive adjustments for queue modal */
+/* Tablet for modal */
 @media (max-width: 768px) {
   .queue-modal-overlay {
     align-items: center;
@@ -587,6 +735,7 @@
   }
 }
 
+/* Mobile for modal */
 @media (max-width: 480px) {
   .queue-modal-overlay {
     padding: 0.5rem;
@@ -632,7 +781,7 @@
   }
 }
 
-/* Tablet specific adjustments */
+/* Tablet for modal */
 @media (min-width: 769px) and (max-width: 1024px) {
   .queue-modal-overlay {
     align-items: center;
@@ -648,7 +797,7 @@
   }
 }
 
-/* Desktop positioning */
+/* Desktop */
 @media (min-width: 1025px) {
   .queue-modal-overlay {
     align-items: center;

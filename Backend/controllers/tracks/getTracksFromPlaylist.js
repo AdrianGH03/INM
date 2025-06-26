@@ -9,6 +9,7 @@ exports.getTracksFromPlaylist = async (req, res) => {
     try {
         let nextURL = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
 
+        // Fetch all tracks from the playlist in a while loop (multiple requests) as spotify only returns 100 tracks at a time
         while (nextURL) {
             const userPlaylist = await axios(nextURL, {
                 headers: {
@@ -16,6 +17,7 @@ exports.getTracksFromPlaylist = async (req, res) => {
                 }
             });
 
+            // Check if the response contains items and add them to allSongs
             userPlaylist.data.items.forEach(item => {
                 if (item.track && item.track.artists) {
                     allSongs.push(item);
@@ -28,10 +30,8 @@ exports.getTracksFromPlaylist = async (req, res) => {
             nextURL = userPlaylist.data.next;
         }
 
-        // Convert the set to an array
+        // Fetch artist details in batches of 50 to avoid hitting the API limit
         artistIds = Array.from(artistIds);
-
-        // Fetch artist details in batches
         const artistDetails = {};
         const batchSize = 50;
         for (let i = 0; i < artistIds.length; i += batchSize) {
@@ -47,7 +47,7 @@ exports.getTracksFromPlaylist = async (req, res) => {
             });
         }
 
-        // Add genres to each track
+        //Add genres to each track for filtering on frontend
         allSongs.forEach(item => {
             item.track.artists.forEach(artist => {
                 artist.genres = artistDetails[artist.id] || [];

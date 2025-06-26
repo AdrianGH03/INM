@@ -1,8 +1,22 @@
 import { useEffect, useState } from 'react';
 import LoadingSpinner from '../Loading/LoadingSpinner';
 
-function Tracks({ playlists, currentPage, currentPlaylistId, tracksPerPage, setTracks, setFilteredTracks, setGenres, setTracksShow, filteredTracks = [], setCurrentTrack }) {
-    const [isLoading, setIsLoading] = useState(false);    useEffect(() => {
+function Tracks({ 
+    playlists, 
+    currentPage, 
+    currentPlaylistId, 
+    tracksPerPage, 
+    setTracks, 
+    setFilteredTracks, 
+    setGenres, 
+    setTracksShow, 
+    filteredTracks = [] 
+    }) {
+
+    const [isLoading, setIsLoading] = useState(false);    
+    
+    //Fetch tracks for the current playlist from the backend using the currentPlaylistId
+    useEffect(() => {
         if (playlists.playlists && playlists.playlists.length > 0 && currentPlaylistId) {
             const getTracks = async () => {
                 setIsLoading(true);
@@ -13,6 +27,8 @@ function Tracks({ playlists, currentPage, currentPlaylistId, tracksPerPage, setT
 
                     const data = await response.json();
                     const genreCount = {};
+
+                    //Filter out tracks by genres, and set genres if they exist, else its just the same tracks showing as filteredTracks
                     for (let track of data) {
                         const genre = track.track.artists[0].genres[0];
                         if (genre) {
