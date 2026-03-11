@@ -10,18 +10,11 @@ const MainPage = () => {
     
         {/* Home Page Cards - Bottom Section */}
         <section className="home-cards-container animate__backInUp">
-            <div className="home-card">
-                <h2>New sounds, same soul.</h2>
-                <p>Discover tracks from similar artists that match your playlist’s energy.</p>
-            </div>
-            <div className="home-card">
-                <h2>Your playlist, reimagined.</h2>
-                <p>You’ve built the vibe. Now we expand it.</p>
-            </div>
-            <div className="home-card">
-                <h2>Click. Save. Repeat.</h2>
-                <p>Liked what you heard? Add it to your library with one tap.</p>
-            </div>
+            
+                <h2></h2>
+                <p style={{ marginTop: '5rem', textAlign: 'center', lineHeight: '40px' }}>Due to Spotify API changes on March 9th, 2026, this site is temporarily down. Please refer to the <a href="https://github.com/AdrianGH03/INM" style={{color: 'aqua'}}>INM GitHub</a></p>
+            
+            
         </section>
     </>
   )
