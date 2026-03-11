@@ -37,7 +37,7 @@
 
 ---
 
-## 📸 Screenshots (Project is a WIP, but functional)
+## 📸 Screenshots 
 
 ![image](https://github.com/user-attachments/assets/effe04e5-ddc6-4203-8b57-aff258fc7c81)
 ![image](https://github.com/user-attachments/assets/cdbe9504-fab1-4be0-b1b2-b20650a418fa)
